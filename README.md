@@ -224,14 +224,6 @@ Les données utilisées sont **synthétiques**. Le dossier `datasets/` ne contie
 
 Les mots de passe présents dans `docker-compose.yml` sont des identifiants de démonstration pour un usage local uniquement.
 
-## Limites et pistes d'amélioration
-
-- Les identifiants patients diffèrent entre Kafka (`P003`) et Hive (`PAT0003`) : une normalisation est faite dans le code Spark ; unifier les identifiants à la source serait plus propre.
-- Les seuils sont fixes et identiques pour tous les patients : ils pourraient être personnalisés par pathologie, ou remplacés par un modèle de détection d'anomalies.
-- Le centre de santé le plus proche est déjà calculé côté Spark à partir de la table `centres_sante`, mais n'est pas encore affiché dans le dossier patient.
-- Les boutons d'action du dashboard (envoyer un soignant, appeler l'urgence, exporter un rapport) sont des maquettes.
-- Pas d'authentification ni de chiffrement : projet prototype, non destiné à un usage clinique.
-
 ## Auteure
 
 **Chahnez Naccache** · Master Data Science · [LinkedIn](https://linkedin.com/in/chahnez-naccache) · [Portfolio](https://github.com/Chaki0107/Portfolio)
