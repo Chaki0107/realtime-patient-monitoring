@@ -161,7 +161,7 @@ kafka-topics --create --topic mesures-patients --bootstrap-server localhost:9092
 kafka-topics --list --bootstrap-server localhost:9092    # vérification
 ```
 
-### 7. Lancer le streaming Spark (terminal 1)
+### 7. Lancer le streaming Spark
 
 ```bash
 docker restart dashboard-alertes
@@ -180,7 +180,7 @@ python3 -m pip install python-socketio==4.6.0 python-engineio==3.13.2 kafka-pyth
 
 Attends l'affichage de `En attente de mesures Kafka`. L'installation des paquets Python est à refaire si le conteneur est recréé.
 
-### 8. Envoyer les mesures (terminal 2)
+### 8. Envoyer les mesures 
 
 Dans un **nouveau terminal**, simule la smartwatch :
 
@@ -189,7 +189,7 @@ docker exec -it spark-master bash
 python3 /spark_scripts/kafka_producer.py
 ```
 
-Pour suivre le serveur Flask (terminal 3, facultatif) :
+Pour suivre le serveur Flask (facultatif) :
 
 ```bash
 docker logs dashboard-alertes -f
