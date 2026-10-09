@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surveillance Patients — Dashboard Alertes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #0F1117; color: #E2E8F0; min-height: 100vh; }
+
+.header { background: #1A1F2E; border-bottom: 1px solid #2D3748; padding: 16px 24px;
+          display: flex; align-items: center; justify-content: space-between; }
+.header h1 { font-size: 18px; font-weight: 600; color: #F1F5F9; }
+.header h1 span { color: #38BDF8; }
+.conn-wrap { display: flex; align-items: center; gap: 8px; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #22C55E; animation: pulse 2s infinite; }
+.status-dot.off { background: #EF4444; animation: none; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.conn-label { font-size: 13px; color: #94A3B8; }
+
+.stats-bar { display: flex; gap: 12px; padding: 16px 24px; background: #141820; }
+.stat-card { background: #1E2538; border-radius: 10px; padding: 12px 20px; flex: 1; text-align: center; }
+.stat-num { font-size: 28px; font-weight: 700; }
+.stat-lbl { font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+.num-c { color: #EF4444; } .num-w { color: #F59E0B; } .num-n { color: #22C55E; } .num-t { color: #38BDF8; }
+
+.section-title { padding: 16px 24px 8px; font-size: 12px; color: #64748B;
+                 text-transform: uppercase; letter-spacing: .08em; }
+.patients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                 gap: 14px; padding: 0 24px 24px; }
+
+.patient-card { background: #1A1F2E; border: 1px solid #2D3748; border-radius: 12px;
+                padding: 14px; cursor: pointer; transition: all .2s; }
+.patient-card:hover { transform: translateY(-2px); border-color: #4A5568; }
+.patient-card.CRITIQUE { border-color: #EF4444; background: #1F1215; box-shadow: 0 0 0 1px #EF444430; animation: flash .5s ease-in-out; }
+.patient-card.WARNING  { border-color: #F59E0B; background: #1F1C12; }
+.patient-card.NORMAL   { border-color: #22C55E30; }
+@keyframes flash { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.patient-id { font-size: 15px; font-weight: 600; color: #F1F5F9; }
+.card-sub { font-size: 11px; color: #475569; margin-bottom: 10px; }
+.niveau-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.badge-CRITIQUE { background: #EF444420; color: #EF4444; border: 1px solid #EF444460; }
+.badge-WARNING  { background: #F59E0B20; color: #F59E0B; border: 1px solid #F59E0B60; }
+.badge-NORMAL   { background: #22C55E20; color: #22C55E; border: 1px solid #22C55E60; }
+
+.vitals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.vital-item { background: #111827; border-radius: 6px; padding: 6px 10px; }
+.vital-lbl { font-size: 10px; color: #64748B; text-transform: uppercase; letter-spacing: .05em; }
+.vital-val { font-size: 14px; font-weight: 600; color: #E2E8F0; }
+.vital-val.alerte { color: #EF4444; }
+.vital-val.warn   { color: #F59E0B; }
+
+.alertes-list { margin-bottom: 8px; }
+.alerte-item { display: flex; align-items: center; gap: 8px; padding: 4px 8px;
+               border-radius: 5px; margin-bottom: 3px; font-size: 11px; }
+.alerte-item.CRITIQUE { background: #EF444415; color: #FCA5A5; }
+.alerte-item.WARNING  { background: #F59E0B15; color: #FDE68A; }
+.alerte-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-CRITIQUE { background: #EF4444; } .dot-WARNING { background: #F59E0B; }
+.ts-label { font-size: 10px; color: #334155; margin-top: 6px; }
+
+.log-section { padding: 0 24px 24px; }
+.log-title { font-size: 12px; color: #64748B; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.log-box { background: #0D1017; border: 1px solid #1E2538; border-radius: 10px;
+           height: 160px; overflow-y: auto; padding: 10px 14px;
+           font-family: 'Courier New', monospace; font-size: 12px; }
+.log-line { margin-bottom: 4px; color: #64748B; }
+.log-line .ts { color: #334155; } .log-line .pid { color: #38BDF8; font-weight: 600; }
+.log-line.CRITIQUE .val { color: #EF4444; font-weight: 600; }
+.log-line.WARNING  .val { color: #F59E0B; }
+
+/* ── Modal dossier patient ── */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                 background: rgba(0,0,0,.8); z-index: 1000;
+                 display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal-box { background: #111827; border-radius: 14px; padding: 24px;
+             width: 100%; max-width: 900px; max-height: 88vh; overflow-y: auto; }
+.modal-box.CRITIQUE { border: 2px solid #EF4444; }
+.modal-box.WARNING  { border: 2px solid #F59E0B; }
+.modal-box.NORMAL   { border: 1px solid #22C55E; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center;
+          justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.avatar.CRITIQUE { background: #EF444420; color: #EF4444; }
+.avatar.WARNING  { background: #F59E0B20; color: #F59E0B; }
+.avatar.NORMAL   { background: #22C55E20; color: #22C55E; }
+.modal-name { font-size: 17px; font-weight: 600; color: #F1F5F9; }
+.modal-sub  { font-size: 12px; color: #64748B; margin-top: 2px; }
+.btn-close { background: transparent; border: 1px solid #374151; color: #9CA3AF;
+             border-radius: 6px; padding: 5px 14px; cursor: pointer; font-size: 13px; }
+.btn-close:hover { background: #1F2937; }
+
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.modal-section { }
+.msec-title { font-size: 10px; color: #64748B; text-transform: uppercase;
+              letter-spacing: .08em; margin-bottom: 10px; font-weight: 600; }
+.info-row { display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 6px 0; border-bottom: .5px solid #1E2538; font-size: 12px; }
+.info-row:last-child { border: none; }
+.info-lbl { color: #64748B; flex-shrink: 0; margin-right: 8px; }
+.info-val { color: #E2E8F0; font-weight: 500; text-align: right; }
+.info-val.blue { color: #38BDF8; }
+
+.loc-box { background: #0D1117; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+.loc-city { font-size: 14px; color: #38BDF8; font-weight: 600; }
+.loc-sub  { font-size: 11px; color: #475569; margin-top: 2px; }
+
+.kpi-box { background: #0D1117; border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
+
+.modal-alerte { display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+                border-radius: 6px; margin-bottom: 4px; font-size: 12px; }
+.modal-alerte.CRITIQUE { background: #EF444415; color: #FCA5A5; }
+.modal-alerte.WARNING  { background: #F59E0B15; color: #FDE68A; }
+
+.vital-row { display: flex; justify-content: space-between; padding: 5px 0;
+             border-bottom: .5px solid #1E2538; font-size: 12px; }
+.vital-row:last-child { border: none; }
+.vital-row .lbl { color: #64748B; }
+.vital-row .val { color: #E2E8F0; font-weight: 500; }
+.vital-row .val.r { color: #EF4444; } .vital-row .val.a { color: #F59E0B; }
+
+.btn-primary { width: 100%; padding: 12px; background: #EF4444; color: #fff;
+               border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+               cursor: pointer; margin-bottom: 8px; }
+.btn-primary:hover { background: #DC2626; }
+.btn-secondary { width: 100%; padding: 10px; background: transparent; color: #38BDF8;
+                 border: 1px solid #38BDF840; border-radius: 8px; font-size: 12px;
+                 cursor: pointer; margin-bottom: 6px; }
+.btn-secondary:hover { background: #38BDF810; }
+.btn-tertiary { width: 100%; padding: 10px; background: transparent; color: #A78BFA;
+                border: 1px solid #A78BFA40; border-radius: 8px; font-size: 12px; cursor: pointer; }
+.btn-tertiary:hover { background: #A78BFA10; }
+.note-box { background: #0D1117; border-radius: 8px; padding: 10px 12px;
+            font-size: 11px; color: #475569; line-height: 1.6; margin-top: 10px; }
+.note-box strong { color: #64748B; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Surveillance <span>Patients Âgés</span> — Alertes Temps Réel</h1>
+  <div class="conn-wrap">
+    <span class="status-dot off" id="dot"></span>
+    <span class="conn-label" id="conn-label">Déconnecté</span>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-card"><div class="stat-num num-t" id="cnt-total">0</div><div class="stat-lbl">Alertes totales</div></div>
+  <div class="stat-card"><div class="stat-num num-c" id="cnt-crit">0</div><div class="stat-lbl">Critiques</div></div>
+  <div class="stat-card"><div class="stat-num num-w" id="cnt-warn">0</div><div class="stat-lbl">Warnings</div></div>
+  <div class="stat-card"><div class="stat-num num-n" id="cnt-patients">0</div><div class="stat-lbl">Patients surveillés</div></div>
+</div>
+
+<div class="section-title">État en temps réel — cliquez une carte pour le dossier complet</div>
+<div class="patients-grid" id="patients-grid">
+  <div style="color:#334155;font-size:13px;padding:20px">En attente des données Spark...</div>
+</div>
+
+<div class="log-section">
+  <div class="log-title">Flux d'alertes en direct</div>
+  <div class="log-box" id="log-box"></div>
+</div>
+
+<script>
+const socket = io('http://localhost:5001');
+let cntTotal = 0, cntCrit = 0, cntWarn = 0;
+const patients = {};
+
+socket.on('connect', () => {
+  document.getElementById('dot').classList.remove('off');
+  document.getElementById('conn-label').textContent = 'Connecté — Spark actif';
+  logLine('SYS', 'Connexion WebSocket établie avec Flask', 'NORMAL');
+});
+socket.on('disconnect', () => {
+  document.getElementById('dot').classList.add('off');
+  document.getElementById('conn-label').textContent = 'Déconnecté';
+});
+
+socket.on('alerte', (data) => {
+  cntTotal++;
+  if (data.niveau_alerte === 'CRITIQUE') cntCrit++;
+  else if (data.niveau_alerte === 'WARNING') cntWarn++;
+  document.getElementById('cnt-total').textContent = cntTotal;
+  document.getElementById('cnt-crit').textContent  = cntCrit;
+  document.getElementById('cnt-warn').textContent  = cntWarn;
+  logLine(data.patient_id,
+          `${data.signal.replace(/_/g,' ')} = ${data.valeur_mesuree} ${data.unite}`,
+          data.niveau_alerte, data.heure || data.timestamp);
+});
+
+socket.on('patient_update', (data) => {
+  patients[data.patient_id] = data;
+  document.getElementById('cnt-patients').textContent = Object.keys(patients).length;
+  renderPatients();
+});
+
+// ── Rendu grille patients ──
+function renderPatients() {
+  const grid = document.getElementById('patients-grid');
+  grid.innerHTML = '';
+  const ordre = { 'CRITIQUE': 0, 'WARNING': 1, 'NORMAL': 2 };
+  const sorted = Object.values(patients).sort(
+    (a, b) => (ordre[a.niveau_max]||2) - (ordre[b.niveau_max]||2)
+  );
+  sorted.forEach(p => {
+    const niveau  = p.niveau_max || 'NORMAL';
+    const alertes = p.alertes || [];
+    const fc_c    = alertes.find(a=>a.signal==='frequence_cardiaque')?.niveau_alerte||'NORMAL';
+    const spo2_c  = alertes.find(a=>a.signal==='spo2')?.niveau_alerte||'NORMAL';
+    const tens_c  = alertes.find(a=>a.signal==='tension_systolique'||a.signal==='tension_diastolique')?.niveau_alerte||'NORMAL';
+    const gly_c   = alertes.find(a=>a.signal==='glycemie')?.niveau_alerte||'NORMAL';
+
+    const card = document.createElement('div');
+    card.className = `patient-card ${niveau}`;
+    card.onclick = () => ouvrirDossier(p);
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="patient-id">${p.nom || p.patient_id}</span>
+        <span class="niveau-badge badge-${niveau}">${niveau}</span>
+      </div>
+      <div class="card-sub">${p.ville||''} ${p.maladie ? '· '+p.maladie : ''}</div>
+      <div class="vitals-grid">
+        <div class="vital-item">
+          <div class="vital-lbl">Fréq. cardiaque</div>
+          <div class="vital-val ${fc_c!=='NORMAL'?(fc_c==='CRITIQUE'?'alerte':'warn'):''}">${p.fc??'—'} bpm</div>
+        </div>
+        <div class="vital-item">
+          <div class="vital-lbl">SpO2</div>
+          <div class="vital-val ${spo2_c!=='NORMAL'?(spo2_c==='CRITIQUE'?'alerte':'warn'):''}">${p.spo2??'—'} %</div>
+        </div>
+        <div class="vital-item">
+          <div class="vital-lbl">Tension</div>
+          <div class="vital-val ${tens_c!=='NORMAL'?(tens_c==='CRITIQUE'?'alerte':'warn'):''}">${p.tension??'—'} mmHg</div>
+        </div>
+        <div class="vital-item">
+          <div class="vital-lbl">Glycémie</div>
+          <div class="vital-val ${gly_c!=='NORMAL'?(gly_c==='CRITIQUE'?'alerte':'warn'):''}">${typeof p.glycemie==='number'?p.glycemie.toFixed(2):p.glycemie??'—'} g/L</div>
+        </div>
+      </div>
+      ${alertes.length>0?`
+      <div class="alertes-list">
+        ${alertes.slice(0,3).map(a=>`
+          <div class="alerte-item ${a.niveau_alerte}">
+            <span class="alerte-dot dot-${a.niveau_alerte}"></span>
+            <span>${a.signal.replace(/_/g,' ')} = ${a.valeur_mesuree} ${a.unite}</span>
+          </div>`).join('')}
+        ${alertes.length>3?`<div style="font-size:10px;color:#475569;padding:2px 8px">+${alertes.length-3} autres alertes</div>`:''}
+      </div>`:''}
+      <div class="ts-label">Cliquer pour le dossier complet · ${p.timestamp||'—'}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ── Panneau dossier médecin ──
+function ouvrirDossier(p) {
+  const niveau  = p.niveau_max || 'NORMAL';
+  const alertes = p.alertes || [];
+  const isCrit  = niveau === 'CRITIQUE';
+  const initials = (p.nom||p.patient_id).split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = (e) => { if(e.target===overlay) overlay.remove(); };
+
+  // Couleurs vitaux
+  const fcClass   = alertes.find(a=>a.signal==='frequence_cardiaque')?.niveau_alerte||'NORMAL';
+  const spo2Class = alertes.find(a=>a.signal==='spo2')?.niveau_alerte||'NORMAL';
+  const tensClass = alertes.find(a=>a.signal==='tension_systolique'||a.signal==='tension_diastolique')?.niveau_alerte||'NORMAL';
+  const glyClass  = alertes.find(a=>a.signal==='glycemie')?.niveau_alerte||'NORMAL';
+  const tempClass = alertes.find(a=>a.signal==='temperature_C')?.niveau_alerte||'NORMAL';
+
+  function vc(c){ return c==='CRITIQUE'?'r':c==='WARNING'?'a':''; }
+
+  overlay.innerHTML = `
+    <div class="modal-box ${niveau}">
+      <div class="modal-header">
+        <div class="modal-title">
+          <div class="avatar ${niveau}">${initials}</div>
+          <div>
+            <div class="modal-name">${p.nom||p.patient_id}</div>
+            <div class="modal-sub">${p.age??'?'} ans · ${p.sexe??''} · Inscrit le ${p.inscription||'?'} · ${p.patient_id}</div>
+          </div>
+          <span class="niveau-badge badge-${niveau}" style="margin-left:16px">${niveau}</span>
+        </div>
+        <button class="btn-close" onclick="this.closest('.modal-overlay').remove()">Fermer</button>
+      </div>
+
+      <div class="modal-grid">
+
+        <!-- Colonne 1 : Dossier -->
+        <div class="modal-section">
+          <div class="msec-title">Dossier médical</div>
+          <div class="info-row"><span class="info-lbl">Maladie</span><span class="info-val">${p.maladie||'—'}</span></div>
+          <div class="info-row"><span class="info-lbl">Médecin</span><span class="info-val">${p.medecin||'—'}</span></div>
+          <div class="info-row"><span class="info-lbl">N° urgence</span><span class="info-val blue">${p.urgence||'—'}</span></div>
+          <div class="info-row"><span class="info-lbl">Dernière mesure</span><span class="info-val">${p.timestamp||'—'}</span></div>
+
+          <div class="loc-box">
+            <div class="msec-title">Localisation domicile</div>
+            <div class="loc-city">${p.ville||'Inconnue'}</div>
+            <div class="loc-sub">Envoyer soignant dans cette région</div>
+          </div>
+
+          <div class="kpi-box">
+            <div class="msec-title">Signaux vitaux actuels</div>
+            <div class="vital-row"><span class="lbl">Fréq. cardiaque</span><span class="val ${vc(fcClass)}">${p.fc??'—'} bpm</span></div>
+            <div class="vital-row"><span class="lbl">SpO2</span><span class="val ${vc(spo2Class)}">${p.spo2??'—'} %</span></div>
+            <div class="vital-row"><span class="lbl">Tension</span><span class="val ${vc(tensClass)}">${p.tension??'—'} mmHg</span></div>
+            <div class="vital-row"><span class="lbl">Glycémie</span><span class="val ${vc(glyClass)}">${typeof p.glycemie==='number'?p.glycemie.toFixed(2):p.glycemie??'—'} g/L</span></div>
+            <div class="vital-row"><span class="lbl">Température</span><span class="val ${vc(tempClass)}">${typeof p.temperature==='number'?p.temperature.toFixed(1):p.temperature??'—'} °C</span></div>
+          </div>
+        </div>
+
+        <!-- Colonne 2 : Alertes -->
+        <div class="modal-section">
+          <div class="msec-title">Alertes actives (${alertes.length})</div>
+          ${alertes.length===0
+            ? '<div style="font-size:12px;color:#22C55E;padding:8px 0">Aucune alerte — patient stable</div>'
+            : alertes.map(a=>`
+              <div class="modal-alerte ${a.niveau_alerte}">
+                <span class="alerte-dot dot-${a.niveau_alerte}"></span>
+                <span>${a.signal.replace(/_/g,' ')} = ${a.valeur_mesuree} ${a.unite}</span>
+                <span style="margin-left:auto;opacity:.6;font-size:11px">${a.heure||''}</span>
+              </div>`).join('')}
+
+          <div style="margin-top:14px">
+            <div class="msec-title">Seuils de référence</div>
+            ${alertes.map(a=>`
+              <div class="info-row">
+                <span class="info-lbl">${a.signal.replace(/_/g,' ')}</span>
+                <span class="info-val" style="font-size:11px">
+                  warning [${a.seuil_warn_min??'?'} – ${a.seuil_warn_max??'?'}] ${a.unite}
+                </span>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Colonne 3 : Actions -->
+        <div class="modal-section">
+          <div class="msec-title">Actions médicales</div>
+          ${isCrit ? `
+          <button class="btn-primary"
+            onclick="alert('Intervention soignant envoyée pour ${(p.nom||p.patient_id).replace(/'/g,'')} à ${(p.ville||'domicile').replace(/'/g,'')}')">
+            Envoyer soignant à domicile
+          </button>` : ''}
+          <button class="btn-secondary"
+            onclick="alert('Appel vers ${(p.urgence||'urgence').replace(/'/g,'')}')">
+            Appeler numéro d'urgence
+          </button>
+          <button class="btn-tertiary"
+            onclick="alert('Consultation programmée pour ${(p.nom||p.patient_id).replace(/'/g,'')}')">
+            Programmer consultation
+          </button>
+          <button class="btn-tertiary" style="margin-top:6px;color:#94A3B8;border-color:#94A3B840"
+            onclick="alert('Rapport exporté pour ${(p.nom||p.patient_id).replace(/'/g,'')}')">
+            Exporter rapport PDF
+          </button>
+
+          <div class="note-box">
+            <strong>Note clinique :</strong><br>
+            Patient suivi pour ${p.maladie||'—'}.<br>
+            Médecin référent : ${p.medecin||'—'}.<br>
+            ${isCrit ? '<span style="color:#EF4444;font-weight:600">Intervention urgente recommandée.</span>' :
+              niveau==='WARNING' ? '<span style="color:#F59E0B">Surveillance renforcée conseillée.</span>' :
+              '<span style="color:#22C55E">État stable — suivi routinier.</span>'}
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+// ── Log flux ──
+function logLine(pid, msg, niveau, ts) {
+  const box = document.getElementById('log-box');
+  const now = ts || new Date().toLocaleTimeString('fr-FR');
+  const line = document.createElement('div');
+  line.className = `log-line ${niveau}`;
+  line.innerHTML = `<span class="ts">[${now}]</span> <span class="pid">${pid}</span> → <span class="val">${msg}</span>`;
+  box.insertBefore(line, box.firstChild);
+  while (box.children.length > 150) box.removeChild(box.lastChild);
+}
+</script>
+</body>
+</html>

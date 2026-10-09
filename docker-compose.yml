@@ -1,0 +1,150 @@
+version: "3.8"
+
+services:
+
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    environment:
+      - CLUSTER_NAME=bigdata
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    ports:
+      - "9870:9870"
+    volumes:
+      - ./datasets:/datasets
+    networks:
+      - bigdata-net
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    depends_on:
+      - namenode
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    networks:
+      - bigdata-net
+
+  hive-metastore-db:
+    image: postgres:13
+    container_name: hive-metastore-db
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+    networks:
+      - bigdata-net
+
+  hive:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive
+    volumes:
+      - ./hive_scripts:/hive_scripts
+    platform: linux/amd64
+    depends_on:
+      - namenode
+      - datanode
+      - hive-metastore-db
+    environment:
+      - HIVE_METASTORE_DB_TYPE=postgres
+      - HIVE_METASTORE_DB_HOST=hive-metastore-db
+      - HIVE_SITE_CONF_javax_jdo_option_ConnectionURL=jdbc:postgresql://hive-metastore-db:5432/metastore
+      - HIVE_SITE_CONF_javax_jdo_option_ConnectionUserName=hive
+      - HIVE_SITE_CONF_javax_jdo_option_ConnectionPassword=hive
+      - HIVE_SITE_CONF_javax_jdo_option_ConnectionDriverName=org.postgresql.Driver      
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - HIVE_SITE_CONF_hive_metastore_uris=thrift://hive:9083
+    ports:
+      - "10000:10000"
+    networks:
+      - bigdata-net
+
+  pig:
+    build: .
+    container_name: pig
+    platform: linux/amd64
+    depends_on:
+      - namenode
+      - datanode
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - PIG_HOME=/opt/pig
+    volumes:
+      - ./datasets:/datasets
+      - ./pig_scripts:/pig_scripts
+    command: tail -f /dev/null
+    networks:
+      - bigdata-net
+
+  spark-master:
+    image: bde2020/spark-master:3.1.1-hadoop3.2
+    container_name: spark-master
+    environment:
+      # On dit à Spark où se trouve le serveur Hive
+      - HIVE_SITE_CONF_hive_metastore_uris=thrift://hive:9083
+      # On lui donne l'accès au NameNode pour lire les fichiers sur HDFS
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      # Optionnel : définir le répertoire par défaut de Hive
+      - SPARK_CONF_spark_sql_warehouse_dir=/user/hive/warehouse
+    volumes:
+    - ./spark_scripts:/spark_scripts
+    ports:
+      - "8080:8080"
+    depends_on:
+      - hive
+      - namenode
+    networks:
+      - bigdata-net
+
+  spark-worker:
+    image: bde2020/spark-worker:3.1.1-hadoop3.2
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    networks:
+      - bigdata-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - bigdata-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - bigdata-net
+
+  dashboard:
+      image: python:3.9-slim
+      container_name: dashboard-alertes
+      volumes:
+        - ./spark_scripts:/app
+      working_dir: /app
+      ports:
+        - "5001:5000"
+      environment:
+      - FLASK_ENV=development
+      command: >
+        sh -c "python3 -m pip install flask==1.1.4 flask-socketio==4.3.1 python-socketio==4.6.0 kafka-python python-engineio==3.13.2 markupsafe==2.0.1 requests eventlet==0.30.2 && python3 server.py"
+      networks:
+        - bigdata-net
+
+
+networks:
+  bigdata-net:
+    driver: bridge
