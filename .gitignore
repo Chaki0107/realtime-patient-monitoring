@@ -5,5 +5,4 @@ __pycache__/
 .DS_Store
 spark_checkpoint*/
 *.log
-datasets/*.csv
-!datasets/sample/*.csv
+
