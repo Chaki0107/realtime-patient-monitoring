@@ -63,22 +63,26 @@ flowchart LR
 
 ```
 .
-├── docker-compose.yml        # 10 services : Hadoop, Hive, Pig, Spark, Kafka, dashboard
-├── Dockerfile                # image Pig (Pig 0.17 sur l'image Hadoop)
-├── pig_scripts/pig_etl.pig   # ETL : nettoyage, jointures, flags
+├── docker-compose.yml          # 10 services : Hadoop, Hive, Pig, Spark, Kafka, dashboard
+├── Dockerfile                  # image Pig (Pig 0.17 sur l'image Hadoop)
+├── pig_scripts/pig_etl.pig     # ETL : nettoyage, jointures, flags
 ├── hive_scripts/hive_kpis.hql  # tables, seuils, 4 KPIs, centres de santé
 ├── spark_scripts/
-│   ├── kafka_producer.py     # simule une smartwatch
-│   ├── spark_alertes.py      # streaming et détection des alertes
-│   ├── server.py             # Flask + Socket.IO
-│   └── dashboard.html        # interface web
-├── datasets/                 # échantillons synthétiques
-└── docs/                     # schémas et captures
+│   ├── kafka_producer.py       # simule une smartwatch
+│   ├── spark_alertes.py        # streaming et détection des alertes
+│   ├── server.py               # Flask + Socket.IO
+│   └── dashboard.html          # interface web
+├── datasets/                   # échantillons synthétiques (CSV)
+└── docs/                       # schémas et captures
 ```
 
 ## Lancer le projet
 
-**Prérequis :** Docker et Docker Compose.
+**Prérequis :** Docker Desktop (Docker Compose inclus), avec 6 à 8 Go de mémoire alloués au minimum : le projet démarre 10 conteneurs. Le premier démarrage télécharge plusieurs images et prend quelques minutes.
+
+Plusieurs étapes demandent des terminaux séparés ; ils sont indiqués ci-dessous. **Respecte l'ordre des étapes.**
+
+### 1. Démarrer les conteneurs
 
 ```bash
 git clone https://github.com/Chaki0107/realtime-patient-monitoring.git
@@ -86,39 +90,139 @@ cd realtime-patient-monitoring
 docker compose up -d --build
 ```
 
-1. **Charger les données dans HDFS** (fichiers CSV placés dans `datasets/`)
-   ```bash
-   docker exec -it namenode hdfs dfs -mkdir -p /user/hadoop/input/patients
-   docker exec -it namenode hdfs dfs -put -f /datasets/Table_Patients.csv /datasets/Table_SignauxVitaux.csv /datasets/Table_Capteurs.csv /user/hadoop/input/
-   docker exec -it namenode hdfs dfs -put -f /datasets/Table_Patients.csv /user/hadoop/input/patients/
-   ```
-2. **Nettoyage et enrichissement avec Pig**
-   ```bash
-   docker exec -it pig pig /pig_scripts/pig_etl.pig
-   ```
-3. **Tables et KPIs avec Hive**
-   ```bash
-   docker exec -it hive hive -f /hive_scripts/hive_kpis.hql
-   ```
-4. **Lancer le streaming Spark**
-   ```bash
-   docker exec -it spark-master /spark/bin/spark-submit \
-     --master spark://spark-master:7077 \
-     --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1 \
-     /spark_scripts/spark_alertes.py
-   ```
-5. **Envoyer des mesures** (simulation de la smartwatch)
-   ```bash
-   docker cp datasets/nouvelles_observations.csv dashboard-alertes:/tmp/
-   docker exec -it dashboard-alertes python3 /app/kafka_producer.py
-   ```
-6. **Ouvrir le dashboard** : http://localhost:5001
+### 2. Charger les données dans HDFS
+
+Copie les fichiers CSV de `datasets/` dans le conteneur `namenode` :
+
+```bash
+docker cp datasets/Table_Alertes.csv namenode:/tmp/
+docker cp datasets/Table_Capteurs.csv namenode:/tmp/
+docker cp datasets/Table_SignauxVitaux.csv namenode:/tmp/
+docker cp datasets/Table_Patients.csv namenode:/tmp/
+docker exec -it namenode bash
+```
+
+Puis, **dans le conteneur namenode** (garde ce terminal ouvert, il sert encore plus bas) :
+
+```bash
+hdfs dfs -mkdir -p /user/hadoop/input
+hdfs dfs -put /tmp/Table_SignauxVitaux.csv /user/hadoop/input/
+hdfs dfs -put /tmp/Table_Patients.csv /user/hadoop/input/
+hdfs dfs -put /tmp/Table_Capteurs.csv /user/hadoop/input/
+hdfs dfs -put /tmp/Table_Alertes.csv /user/hadoop/input/
+hdfs dfs -ls /user/hadoop/input/        # vérification
+hdfs dfs -mkdir /user/hadoop/output
+```
+
+### 3. Nettoyer et enrichir les données avec Pig
+
+Dans un **nouveau terminal** :
+
+```bash
+docker exec -it pig bash
+pig /pig_scripts/pig_etl.pig
+```
+
+Vérification, dans le terminal namenode :
+
+```bash
+hdfs dfs -tail /user/hadoop/output/data_final_patients/part-r-00000
+```
+
+### 4. Préparer la table patients pour Hive
+
+Hive lit les profils patients dans un dossier dédié. **À faire après Pig** : le script Pig lit `Table_Patients.csv` à la racine de `/user/hadoop/input/`. Dans le terminal namenode :
+
+```bash
+hdfs dfs -mkdir /user/hadoop/input/patients
+hdfs dfs -mv /user/hadoop/input/Table_Patients.csv /user/hadoop/input/patients/Table_Patients.csv
+```
+
+### 5. Calculer les KPIs avec Hive
+
+Dans un **nouveau terminal**. L'initialisation du metastore ne se fait qu'au premier lancement :
+
+```bash
+docker exec -it hive schematool -dbType postgres -initSchema
+docker exec -d hive hive --service metastore
+docker exec -it hive bash
+hive -f /hive_scripts/hive_kpis.hql
+```
+
+Le script se termine par un tableau de vérification qui donne le nombre de lignes de chaque table.
+
+### 6. Créer le topic Kafka
+
+Dans un **nouveau terminal** :
+
+```bash
+docker exec -it kafka bash
+kafka-topics --create --topic mesures-patients --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics --list --bootstrap-server localhost:9092    # vérification
+```
+
+### 7. Lancer le streaming Spark (terminal 1)
+
+```bash
+docker restart dashboard-alertes
+docker cp datasets/nouvelles_observations.csv spark-master:/tmp/
+docker exec -it spark-master bash
+```
+
+Dans le conteneur `spark-master` :
+
+```bash
+python3 -m pip install python-socketio==4.6.0 python-engineio==3.13.2 kafka-python requests flask
+/spark/bin/spark-submit \
+  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1 \
+  /spark_scripts/spark_alertes.py
+```
+
+Attends l'affichage de `En attente de mesures Kafka`. L'installation des paquets Python est à refaire si le conteneur est recréé.
+
+### 8. Envoyer les mesures (terminal 2)
+
+Dans un **nouveau terminal**, simule la smartwatch :
+
+```bash
+docker exec -it spark-master bash
+python3 /spark_scripts/kafka_producer.py
+```
+
+Pour suivre le serveur Flask (terminal 3, facultatif) :
+
+```bash
+docker logs dashboard-alertes -f
+```
+
+### 9. Ouvrir le dashboard
+
+http://localhost:5001
 
 Interfaces utiles : HDFS http://localhost:9870 · Spark http://localhost:8080.
 
+### Relancer une simulation depuis zéro
+
+Dans le conteneur `spark-master`, supprime le checkpoint Spark, puis redémarre le serveur du dashboard :
+
+```bash
+rm -rf /tmp/spark_checkpoint_alertes
+docker restart dashboard-alertes
+```
+
 ## Données
 
-Les données utilisées (patients, signaux vitaux, capteurs) sont **synthétiques**. Ce dépôt ne contient que de petits échantillons dans `datasets/`. Les mots de passe présents dans `docker-compose.yml` sont des identifiants de démonstration pour un usage local uniquement.
+Les données utilisées sont **synthétiques**. Le dossier `datasets/` ne contient que de petits échantillons :
+
+| Fichier | Contenu |
+|---|---|
+| `Table_Patients.csv` | Profils des patients |
+| `Table_SignauxVitaux.csv` | Mesures des constantes vitales |
+| `Table_Capteurs.csv` | État des capteurs |
+| `Table_Alertes.csv` | Table des alertes |
+| `nouvelles_observations.csv` | Mesures envoyées à Kafka pour simuler une smartwatch |
+
+Les mots de passe présents dans `docker-compose.yml` sont des identifiants de démonstration pour un usage local uniquement.
 
 ## Limites et pistes d'amélioration
 
