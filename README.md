@@ -4,7 +4,7 @@ Pipeline **Big Data** complet pour suivre à distance des patients âgés : inge
 
 **Stack :** Hadoop (HDFS) · Pig · Hive · Kafka · Spark Structured Streaming · Flask + Socket.IO · Docker
 
-> Démo interactive du dashboard (données simulées dans le navigateur) : **[lien à ajouter après la mise en ligne du portfolio]**
+> Démo interactive du dashboard (données simulées dans le navigateur) : 
 
 ![Capture du dashboard](docs/dashboard.png)
 
