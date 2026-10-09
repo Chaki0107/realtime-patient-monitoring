@@ -72,7 +72,7 @@ flowchart LR
 │   ├── spark_alertes.py      # streaming et détection des alertes
 │   ├── server.py             # Flask + Socket.IO
 │   └── dashboard.html        # interface web
-├── datasets/sample/          # échantillons synthétiques
+├── datasets/                 # échantillons synthétiques
 └── docs/                     # schémas et captures
 ```
 
@@ -118,7 +118,7 @@ Interfaces utiles : HDFS http://localhost:9870 · Spark http://localhost:8080.
 
 ## Données
 
-Les données utilisées (patients, signaux vitaux, capteurs) sont **synthétiques**. Ce dépôt ne contient que de petits échantillons dans `datasets/sample/`. Les mots de passe présents dans `docker-compose.yml` sont des identifiants de démonstration pour un usage local uniquement.
+Les données utilisées (patients, signaux vitaux, capteurs) sont **synthétiques**. Ce dépôt ne contient que de petits échantillons dans `datasets/`. Les mots de passe présents dans `docker-compose.yml` sont des identifiants de démonstration pour un usage local uniquement.
 
 ## Limites et pistes d'amélioration
 
