@@ -1,0 +1,201 @@
+patient_id;nom;age;sexe;ville;maladie_chronique;medecin_referent;numero_urgence;date_inscription
+PAT0001;Patient_1;71;M;Ariana;Diabète;Dr.Ben Ali;21652043445;2023-10-17
+PAT0002;Patient_2;84;M;Monastir;BPCO;Dr.Khelil;21656213003;2022-04-25
+PAT0003;Patient_3;93;M;Tunis;Diabète;Dr.Khelil;21636689088;2022-01-26
+PAT0004;Patient_4;79;M;Sousse;Arthrite;Dr.Trabelsi;21627102173;2022-10-09
+PAT0005;Patient_5;75;M;Tunis;Insuffisance cardiaque;Dr.Trabelsi;21665388538;2022-09-08
+PAT0006;Patient_6;72;F;Nabeul;Hypertension;Dr.Saidi;21658720111;2022-08-17
+PAT0007;Patient_7;93;M;Sfax;Aucune;Dr.Trabelsi;21668515838;2022-05-23
+PAT0008;Patient_8;85;F;Ariana;Insuffisance cardiaque;Dr.Khelil;21681356950;2022-04-15
+PAT0009;Patient_9;71;M;Monastir;BPCO;Dr.Mansour;21642064334;2023-11-24
+PAT0010;Patient_10;90;M;Sfax;Diabète;Dr.Khelil;21634681316;2023-07-13
+PAT0011;Patient_11;83;M;Sfax;Aucune;Dr.Mansour;21681681549;2022-03-31
+PAT0012;Patient_12;87;F;Monastir;Diabète;Dr.Mansour;21691209537;2023-08-28
+PAT0013;Patient_13;75;F;Sousse;Alzheimer;Dr.Trabelsi;21668840101;2023-03-09
+PAT0014;Patient_14;75;F;Ariana;Diabète;Dr.Chaabane;21682468859;2022-02-02
+PAT0015;Patient_15;88;F;Nabeul;Alzheimer;Dr.Ben Ali;21670305761;2022-01-31
+PAT0016;Patient_16;85;M;Tunis;Arthrite;Dr.Trabelsi;21649367077;2022-04-06
+PAT0017;Patient_17;68;F;Bizerte;Aucune;Dr.Trabelsi;21681580593;2022-08-12
+PAT0018;Patient_18;72;M;Tunis;Aucune;Dr.Chaabane;21670011985;2022-08-27
+PAT0019;Patient_19;88;M;Bizerte;Hypertension;Dr.Ben Ali;21694062621;2023-06-02
+PAT0020;Patient_20;67;F;Tunis;BPCO;Dr.Khelil;21652843745;2023-09-09
+PAT0021;Patient_21;86;F;Monastir;Alzheimer;Dr.Saidi;21639350835;2022-01-28
+PAT0022;Patient_22;85;F;Nabeul;Hypertension;Dr.Saidi;21689562616;2023-07-29
+PAT0023;Patient_23;66;F;Ariana;Diabète;Dr.Khelil;21680084389;2022-07-23
+PAT0024;Patient_24;88;F;Bizerte;Diabète;Dr.Trabelsi;21677597408;2023-10-28
+PAT0025;Patient_25;76;F;Ariana;Hypertension;Dr.Ben Ali;21630320855;2023-12-20
+PAT0026;Patient_26;94;F;Ariana;Aucune;Dr.Trabelsi;21638130254;2023-07-13
+PAT0027;Patient_27;70;F;Ariana;Diabète;Dr.Mansour;21691766557;2023-03-06
+PAT0028;Patient_28;66;M;Gabès;Arthrite;Dr.Trabelsi;21699945266;2022-08-14
+PAT0029;Patient_29;92;F;Sousse;Arthrite;Dr.Trabelsi;21663558992;2023-04-05
+PAT0030;Patient_30;85;F;Tunis;Hypertension;Dr.Khelil;21671628164;2023-08-27
+PAT0031;Patient_31;65;M;Ariana;Alzheimer;Dr.Khelil;21685377052;2022-10-12
+PAT0032;Patient_32;76;F;Tunis;Alzheimer;Dr.Khelil;21655409403;2022-01-07
+PAT0033;Patient_33;90;M;Ariana;Hypertension;Dr.Saidi;21636045907;2022-06-13
+PAT0034;Patient_34;86;M;Bizerte;Alzheimer;Dr.Mansour;21682754884;2023-12-16
+PAT0035;Patient_35;93;F;Sousse;Aucune;Dr.Khelil;21668458273;2023-03-09
+PAT0036;Patient_36;76;M;Sousse;Aucune;Dr.Ben Ali;21635734209;2022-12-15
+PAT0037;Patient_37;89;M;Monastir;Alzheimer;Dr.Saidi;21689800140;2022-10-12
+PAT0038;Patient_38;81;M;Gabès;Arthrite;Dr.Chaabane;21656081386;2022-06-09
+PAT0039;Patient_39;91;M;Monastir;Alzheimer;Dr.Ben Ali;21693658410;2022-08-09
+PAT0040;Patient_40;91;F;Monastir;Aucune;Dr.Ben Ali;21677395058;2022-12-11
+PAT0041;Patient_41;74;M;Monastir;Insuffisance cardiaque;Dr.Khelil;21645827438;2022-04-15
+PAT0042;Patient_42;92;F;Monastir;BPCO;Dr.Chaabane;21636663288;2022-04-05
+PAT0043;Patient_43;92;M;Monastir;Diabète;Dr.Chaabane;21633081782;2023-01-25
+PAT0044;Patient_44;80;M;Nabeul;Insuffisance cardiaque;Dr.Saidi;21679387253;2022-04-10
+PAT0045;Patient_45;79;M;Sousse;Alzheimer;Dr.Chaabane;21663669391;2023-01-03
+PAT0046;Patient_46;94;M;Monastir;Arthrite;Dr.Mansour;21688181511;2022-12-19
+PAT0047;Patient_47;94;F;Ariana;Hypertension;Dr.Khelil;21658660995;2023-09-11
+PAT0048;Patient_48;79;F;Sousse;Alzheimer;Dr.Chaabane;21628234679;2022-09-28
+PAT0049;Patient_49;94;M;Sousse;Arthrite;Dr.Saidi;21643240984;2022-02-14
+PAT0050;Patient_50;83;M;Sfax;BPCO;Dr.Mansour;21642383810;2023-04-16
+PAT0051;Patient_51;76;F;Nabeul;Alzheimer;Dr.Trabelsi;21685438362;2023-07-04
+PAT0052;Patient_52;87;M;Monastir;Aucune;Dr.Trabelsi;21668566364;2022-05-08
+PAT0053;Patient_53;84;M;Tunis;Hypertension;Dr.Mansour;21638727583;2023-01-23
+PAT0054;Patient_54;89;M;Bizerte;Arthrite;Dr.Saidi;21689019569;2022-03-22
+PAT0055;Patient_55;67;F;Gabès;Arthrite;Dr.Mansour;21655156028;2023-07-20
+PAT0056;Patient_56;69;F;Ariana;Arthrite;Dr.Khelil;21640568697;2022-10-28
+PAT0057;Patient_57;83;F;Tunis;BPCO;Dr.Khelil;21641900338;2023-10-06
+PAT0058;Patient_58;71;M;Nabeul;Alzheimer;Dr.Trabelsi;21661311634;2023-09-26
+PAT0059;Patient_59;85;M;Bizerte;BPCO;Dr.Chaabane;21659902996;2023-01-06
+PAT0060;Patient_60;73;F;Nabeul;Diabète;Dr.Saidi;21674481924;2023-08-15
+PAT0061;Patient_61;71;F;Ariana;Diabète;Dr.Trabelsi;21625723601;2022-07-16
+PAT0062;Patient_62;82;F;Sousse;Alzheimer;Dr.Chaabane;21636618153;2023-12-23
+PAT0063;Patient_63;68;F;Bizerte;Aucune;Dr.Chaabane;21622382357;2022-03-13
+PAT0064;Patient_64;89;M;Sousse;BPCO;Dr.Khelil;21695012933;2022-02-16
+PAT0065;Patient_65;92;F;Ariana;Hypertension;Dr.Ben Ali;21633630084;2023-11-09
+PAT0066;Patient_66;78;M;Tunis;Arthrite;Dr.Ben Ali;21672576779;2022-08-22
+PAT0067;Patient_67;82;F;Ariana;Arthrite;Dr.Mansour;21636099248;2022-10-24
+PAT0068;Patient_68;90;M;Tunis;Alzheimer;Dr.Khelil;21634677069;2022-03-23
+PAT0069;Patient_69;73;F;Bizerte;Aucune;Dr.Chaabane;21695589337;2022-08-27
+PAT0070;Patient_70;90;F;Bizerte;Diabète;Dr.Saidi;21632433196;2022-04-14
+PAT0071;Patient_71;85;F;Monastir;Diabète;Dr.Ben Ali;21659010202;2023-01-25
+PAT0072;Patient_72;66;F;Nabeul;Arthrite;Dr.Chaabane;21654626632;2022-10-12
+PAT0073;Patient_73;84;M;Monastir;Alzheimer;Dr.Ben Ali;21697998328;2023-04-10
+PAT0074;Patient_74;92;F;Nabeul;BPCO;Dr.Ben Ali;21673237806;2023-10-13
+PAT0075;Patient_75;79;M;Monastir;Diabète;Dr.Ben Ali;21632457080;2023-01-09
+PAT0076;Patient_76;92;M;Sousse;BPCO;Dr.Saidi;21621222869;2022-06-16
+PAT0077;Patient_77;71;M;Bizerte;Aucune;Dr.Khelil;21670066487;2023-01-15
+PAT0078;Patient_78;76;M;Tunis;Diabète;Dr.Saidi;21623125354;2022-12-30
+PAT0079;Patient_79;93;F;Nabeul;Diabète;Dr.Trabelsi;21682802750;2022-08-03
+PAT0080;Patient_80;72;M;Ariana;Insuffisance cardiaque;Dr.Chaabane;21629818159;2023-11-18
+PAT0081;Patient_81;79;M;Nabeul;Diabète;Dr.Khelil;21631145552;2022-10-01
+PAT0082;Patient_82;67;M;Tunis;Hypertension;Dr.Khelil;21635152994;2023-12-20
+PAT0083;Patient_83;78;F;Monastir;Alzheimer;Dr.Khelil;21695191987;2023-12-01
+PAT0084;Patient_84;81;F;Nabeul;Alzheimer;Dr.Khelil;21642937902;2023-10-26
+PAT0085;Patient_85;68;F;Gabès;BPCO;Dr.Saidi;21696415031;2022-03-15
+PAT0086;Patient_86;82;F;Sousse;Aucune;Dr.Khelil;21687744469;2023-09-16
+PAT0087;Patient_87;72;M;Bizerte;Diabète;Dr.Mansour;21694588685;2023-10-13
+PAT0088;Patient_88;68;M;Tunis;Hypertension;Dr.Chaabane;21662758171;2022-06-25
+PAT0089;Patient_89;66;F;Bizerte;BPCO;Dr.Khelil;21620067661;2023-07-01
+PAT0090;Patient_90;94;M;Gabès;Insuffisance cardiaque;Dr.Chaabane;21627585153;2022-09-08
+PAT0091;Patient_91;70;M;Nabeul;BPCO;Dr.Mansour;21643335437;2022-06-17
+PAT0092;Patient_92;86;M;Nabeul;BPCO;Dr.Mansour;21630466615;2023-04-19
+PAT0093;Patient_93;74;F;Ariana;Diabète;Dr.Chaabane;21654861938;2023-01-24
+PAT0094;Patient_94;68;F;Gabès;Insuffisance cardiaque;Dr.Ben Ali;21622966422;2022-10-04
+PAT0095;Patient_95;86;M;Tunis;BPCO;Dr.Trabelsi;21670154221;2023-10-18
+PAT0096;Patient_96;93;F;Ariana;Hypertension;Dr.Ben Ali;21623708654;2023-12-06
+PAT0097;Patient_97;82;F;Sousse;Hypertension;Dr.Ben Ali;21677647084;2023-07-25
+PAT0098;Patient_98;90;F;Ariana;Alzheimer;Dr.Saidi;21662573305;2022-08-13
+PAT0099;Patient_99;76;F;Sfax;Insuffisance cardiaque;Dr.Ben Ali;21664653349;2023-12-03
+PAT0100;Patient_100;66;F;Tunis;Insuffisance cardiaque;Dr.Khelil;21625872354;2022-11-29
+PAT0101;Patient_101;74;M;Sfax;Alzheimer;Dr.Saidi;21667756479;2022-02-27
+PAT0102;Patient_102;94;F;Gabès;BPCO;Dr.Saidi;21629810404;2022-08-23
+PAT0103;Patient_103;68;M;Monastir;Insuffisance cardiaque;Dr.Mansour;21626292518;2022-02-02
+PAT0104;Patient_104;78;M;Sfax;Hypertension;Dr.Ben Ali;21661142200;2022-11-20
+PAT0105;Patient_105;80;F;Sousse;Hypertension;Dr.Mansour;21684413145;2023-02-15
+PAT0106;Patient_106;79;M;Ariana;Diabète;Dr.Chaabane;21637547389;2022-10-02
+PAT0107;Patient_107;72;M;Monastir;Insuffisance cardiaque;Dr.Trabelsi;21682132760;2022-03-09
+PAT0108;Patient_108;78;M;Ariana;BPCO;Dr.Saidi;21686689168;2022-08-05
+PAT0109;Patient_109;87;F;Sfax;Alzheimer;Dr.Chaabane;21642419480;2023-08-04
+PAT0110;Patient_110;92;F;Ariana;Alzheimer;Dr.Chaabane;21668766345;2022-11-19
+PAT0111;Patient_111;89;M;Gabès;BPCO;Dr.Khelil;21654021442;2022-08-06
+PAT0112;Patient_112;94;F;Monastir;Aucune;Dr.Trabelsi;21666523537;2023-11-03
+PAT0113;Patient_113;72;F;Gabès;Arthrite;Dr.Chaabane;21645153646;2023-05-27
+PAT0114;Patient_114;85;F;Sfax;Diabète;Dr.Chaabane;21697620693;2023-02-10
+PAT0115;Patient_115;80;F;Gabès;Alzheimer;Dr.Trabelsi;21628411883;2023-10-21
+PAT0116;Patient_116;77;M;Sousse;Insuffisance cardiaque;Dr.Trabelsi;21631082322;2023-04-15
+PAT0117;Patient_117;82;M;Sfax;Diabète;Dr.Chaabane;21636203305;2022-05-27
+PAT0118;Patient_118;79;F;Sfax;Insuffisance cardiaque;Dr.Trabelsi;21630848680;2022-09-29
+PAT0119;Patient_119;85;F;Sfax;Aucune;Dr.Chaabane;21679292991;2022-05-23
+PAT0120;Patient_120;88;M;Tunis;Hypertension;Dr.Chaabane;21655555041;2022-09-10
+PAT0121;Patient_121;90;M;Ariana;Diabète;Dr.Khelil;21673028791;2023-07-29
+PAT0122;Patient_122;89;F;Tunis;Alzheimer;Dr.Ben Ali;21696301164;2023-07-06
+PAT0123;Patient_123;92;M;Tunis;Diabète;Dr.Chaabane;21696658629;2022-09-27
+PAT0124;Patient_124;92;F;Sousse;Diabète;Dr.Mansour;21671646180;2023-08-22
+PAT0125;Patient_125;92;F;Monastir;Diabète;Dr.Saidi;21699357216;2023-03-15
+PAT0126;Patient_126;77;M;Ariana;Arthrite;Dr.Ben Ali;21652359860;2023-08-21
+PAT0127;Patient_127;73;M;Gabès;Diabète;Dr.Ben Ali;21654499221;2023-02-13
+PAT0128;Patient_128;93;F;Nabeul;Insuffisance cardiaque;Dr.Ben Ali;21648272916;2023-01-06
+PAT0129;Patient_129;79;F;Sfax;Hypertension;Dr.Khelil;21639032579;2022-08-13
+PAT0130;Patient_130;77;M;Gabès;Aucune;Dr.Chaabane;21650354781;2022-05-22
+PAT0131;Patient_131;65;F;Sfax;BPCO;Dr.Khelil;21636514877;2023-06-06
+PAT0132;Patient_132;89;M;Sousse;Diabète;Dr.Chaabane;21693545310;2023-05-21
+PAT0133;Patient_133;71;F;Sfax;Alzheimer;Dr.Khelil;21696165878;2022-04-04
+PAT0134;Patient_134;73;M;Tunis;Diabète;Dr.Khelil;21698350878;2022-02-18
+PAT0135;Patient_135;88;M;Ariana;Alzheimer;Dr.Saidi;21637810471;2022-04-23
+PAT0136;Patient_136;65;M;Nabeul;Insuffisance cardiaque;Dr.Mansour;21660636644;2022-06-06
+PAT0137;Patient_137;76;F;Bizerte;Alzheimer;Dr.Khelil;21678534435;2023-10-05
+PAT0138;Patient_138;72;F;Sfax;BPCO;Dr.Saidi;21698550238;2022-06-13
+PAT0139;Patient_139;88;M;Gabès;Hypertension;Dr.Trabelsi;21677975251;2023-11-28
+PAT0140;Patient_140;75;F;Tunis;Alzheimer;Dr.Mansour;21623094235;2023-03-09
+PAT0141;Patient_141;83;M;Bizerte;Alzheimer;Dr.Khelil;21667870026;2023-09-03
+PAT0142;Patient_142;81;M;Nabeul;Hypertension;Dr.Ben Ali;21642763342;2022-03-07
+PAT0143;Patient_143;72;F;Bizerte;BPCO;Dr.Trabelsi;21639636869;2023-01-30
+PAT0144;Patient_144;67;F;Tunis;Diabète;Dr.Trabelsi;21647132021;2023-01-26
+PAT0145;Patient_145;67;M;Ariana;Alzheimer;Dr.Saidi;21653942384;2023-09-03
+PAT0146;Patient_146;65;F;Ariana;Hypertension;Dr.Trabelsi;21682867959;2023-04-25
+PAT0147;Patient_147;91;F;Monastir;Insuffisance cardiaque;Dr.Mansour;21637807333;2023-06-26
+PAT0148;Patient_148;69;M;Ariana;Hypertension;Dr.Khelil;21673228466;2022-09-15
+PAT0149;Patient_149;74;M;Monastir;Insuffisance cardiaque;Dr.Khelil;21655912253;2023-07-21
+PAT0150;Patient_150;71;F;Bizerte;BPCO;Dr.Ben Ali;21636263882;2022-01-12
+PAT0151;Patient_151;90;M;Sousse;Diabète;Dr.Saidi;21659138695;2023-11-28
+PAT0152;Patient_152;73;M;Gabès;Hypertension;Dr.Ben Ali;21653799193;2022-04-28
+PAT0153;Patient_153;92;F;Gabès;Aucune;Dr.Trabelsi;21695495044;2023-11-30
+PAT0154;Patient_154;71;M;Bizerte;Aucune;Dr.Ben Ali;21668014453;2023-07-04
+PAT0155;Patient_155;73;M;Sfax;Arthrite;Dr.Mansour;21671569363;2022-10-01
+PAT0156;Patient_156;72;F;Sfax;Alzheimer;Dr.Khelil;21652686304;2023-10-19
+PAT0157;Patient_157;76;F;Ariana;BPCO;Dr.Trabelsi;21695149843;2022-12-15
+PAT0158;Patient_158;66;M;Gabès;Hypertension;Dr.Ben Ali;21692456281;2022-04-25
+PAT0159;Patient_159;65;M;Gabès;Aucune;Dr.Saidi;21696362381;2022-10-28
+PAT0160;Patient_160;80;F;Monastir;Alzheimer;Dr.Mansour;21651699263;2023-03-22
+PAT0161;Patient_161;87;F;Sousse;Aucune;Dr.Mansour;21646216317;2022-06-11
+PAT0162;Patient_162;87;F;Tunis;Hypertension;Dr.Ben Ali;21673215075;2023-04-10
+PAT0163;Patient_163;94;F;Sfax;Insuffisance cardiaque;Dr.Khelil;21654970444;2022-01-04
+PAT0164;Patient_164;88;M;Gabès;Hypertension;Dr.Ben Ali;21625752810;2022-09-27
+PAT0165;Patient_165;69;F;Monastir;Arthrite;Dr.Trabelsi;21620571650;2023-05-28
+PAT0166;Patient_166;67;F;Nabeul;Hypertension;Dr.Ben Ali;21692017911;2022-07-02
+PAT0167;Patient_167;76;M;Monastir;Hypertension;Dr.Mansour;21660435721;2023-06-04
+PAT0168;Patient_168;72;F;Sfax;Arthrite;Dr.Ben Ali;21694531076;2022-04-19
+PAT0169;Patient_169;86;M;Sfax;BPCO;Dr.Khelil;21623757974;2023-10-03
+PAT0170;Patient_170;91;F;Monastir;Hypertension;Dr.Saidi;21695900553;2022-11-02
+PAT0171;Patient_171;67;F;Tunis;Arthrite;Dr.Chaabane;21681119361;2023-10-17
+PAT0172;Patient_172;65;F;Bizerte;Alzheimer;Dr.Ben Ali;21662321932;2023-06-04
+PAT0173;Patient_173;67;M;Sfax;Insuffisance cardiaque;Dr.Khelil;21639931456;2023-09-16
+PAT0174;Patient_174;69;M;Monastir;Insuffisance cardiaque;Dr.Khelil;21679376958;2022-07-23
+PAT0175;Patient_175;79;F;Gabès;Hypertension;Dr.Saidi;21631643208;2022-06-06
+PAT0176;Patient_176;78;M;Monastir;BPCO;Dr.Mansour;21663928336;2023-01-18
+PAT0177;Patient_177;67;M;Sousse;BPCO;Dr.Khelil;21628112074;2022-06-15
+PAT0178;Patient_178;65;M;Bizerte;Alzheimer;Dr.Khelil;21638967438;2023-07-07
+PAT0179;Patient_179;69;M;Nabeul;Hypertension;Dr.Khelil;21632138391;2023-06-28
+PAT0180;Patient_180;90;M;Tunis;Insuffisance cardiaque;Dr.Khelil;21673050917;2022-01-01
+PAT0181;Patient_181;87;M;Ariana;BPCO;Dr.Trabelsi;21644012790;2023-09-06
+PAT0182;Patient_182;78;F;Nabeul;Hypertension;Dr.Trabelsi;21676004002;2022-11-28
+PAT0183;Patient_183;71;F;Bizerte;Aucune;Dr.Mansour;21641982813;2023-05-16
+PAT0184;Patient_184;91;M;Bizerte;BPCO;Dr.Ben Ali;21675616606;2022-01-20
+PAT0185;Patient_185;73;F;Bizerte;Arthrite;Dr.Khelil;21649967940;2022-04-25
+PAT0186;Patient_186;79;F;Nabeul;Aucune;Dr.Saidi;21697822269;2023-01-07
+PAT0187;Patient_187;79;F;Gabès;BPCO;Dr.Ben Ali;21629742257;2022-11-11
+PAT0188;Patient_188;90;F;Bizerte;Insuffisance cardiaque;Dr.Saidi;21672044151;2022-09-03
+PAT0189;Patient_189;74;M;Monastir;Diabète;Dr.Ben Ali;21623609736;2022-03-01
+PAT0190;Patient_190;92;F;Nabeul;Aucune;Dr.Mansour;21695169697;2022-09-04
+PAT0191;Patient_191;77;F;Ariana;Alzheimer;Dr.Khelil;21638161634;2023-08-04
+PAT0192;Patient_192;83;M;Bizerte;Alzheimer;Dr.Khelil;21637163810;2022-03-22
+PAT0193;Patient_193;71;M;Monastir;Insuffisance cardiaque;Dr.Chaabane;21632225855;2022-03-29
+PAT0194;Patient_194;81;F;Gabès;BPCO;Dr.Saidi;21671424149;2023-05-13
+PAT0195;Patient_195;84;F;Sousse;Hypertension;Dr.Ben Ali;21692347195;2022-03-12
+PAT0196;Patient_196;93;F;Gabès;BPCO;Dr.Ben Ali;21621135964;2023-06-30
+PAT0197;Patient_197;68;F;Ariana;Insuffisance cardiaque;Dr.Trabelsi;21683446855;2022-05-09
+PAT0198;Patient_198;94;F;Bizerte;Alzheimer;Dr.Chaabane;21686318090;2022-05-12
+PAT0199;Patient_199;69;F;Ariana;BPCO;Dr.Trabelsi;21680203880;2023-11-07
+PAT0200;Patient_200;87;M;Nabeul;Alzheimer;Dr.Trabelsi;21622155748;2023-05-02
