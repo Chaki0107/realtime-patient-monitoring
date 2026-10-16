@@ -1,2 +1,3 @@
-  *.hql linguist-vendored
-  *.pig linguist-vendored
+   *.hql linguist-vendored
+   *.pig linguist-vendored
+   *.html linguist-vendored
